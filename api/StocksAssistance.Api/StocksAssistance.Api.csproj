@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StocksAssistance.Business\StocksAssistance.Business.csproj" />
+    <ProjectReference Include="..\StocksAssistance.EF\StocksAssistance.EF.csproj" />
   </ItemGroup>
 
 </Project>
