@@ -8,8 +8,12 @@ namespace StocksAssistance.Common.Enums
 {
     public enum CompanyTagType
     {
-        SymbolProvider,
-        Factor,
+        Factor = 0,
         Strategy
+    }
+
+    public enum CompanyAttributeType
+    {
+        YahooSymbol = 0
     }
 }

@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using StocksAssistance.Business.Integrations.DataProviders.Yahoo;
 using StocksAssistance.Business.Integrations.DataProviders.Yahoo.ResponseDtos.v7;
+using StocksAssistance.Business.Services;
+using StocksAssistance.Common.DTOs;
+using StocksAssistance.EF.Models;
 
 namespace StocksAssistance.Api.Controllers
 {
@@ -9,12 +12,35 @@ namespace StocksAssistance.Api.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        [HttpGet(Name = "GetCompany")]
-        public async Task<QuoteRoot> Get()
-        {
-            var result = await YahooApi.GetCompany("AAPL");
+        private CompanyService companyService;
 
-            return result;
+        public CompanyController(CompanyService companyService) 
+        {
+            this.companyService = companyService;
+        }
+
+        /*
+        [HttpGet("{symbol}")]
+        public async Task<QuoteRoot> Get(string symbol)
+        {
+            //var result = await YahooApi.GetCompany(symbol);
+
+            return (;
+        }
+        */
+
+        [HttpPost()]
+        public async Task<IActionResult> Setup(List<CompanySetupDto> companies)
+        {
+            try
+            {
+                await companyService.AddCompanies(companies);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

@@ -43,44 +43,44 @@ namespace StocksAssistance.EF.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DividendYield")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("DividendYield")
+                        .HasColumnType("float");
 
                     b.Property<string>("Industry")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("LTM_PE")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("LTM_PE")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("Last52WeekHigh")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Last52WeekHigh")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("Last52WeekLow")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Last52WeekLow")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("MarketCap")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("MarketCap")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("NTM_PE")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("NTM_PE")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("PriceBookRatio")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("PriceBookRatio")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("ROE")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("ROE")
+                        .HasColumnType("float");
 
                     b.Property<string>("Sector")
                         .IsRequired()
@@ -94,6 +94,32 @@ namespace StocksAssistance.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("StocksAssistance.EF.Models.CompanyAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyAttributes");
                 });
 
             modelBuilder.Entity("StocksAssistance.EF.Models.CompanyTag", b =>
@@ -122,6 +148,17 @@ namespace StocksAssistance.EF.Migrations
                     b.ToTable("CompanyTags");
                 });
 
+            modelBuilder.Entity("StocksAssistance.EF.Models.CompanyAttribute", b =>
+                {
+                    b.HasOne("StocksAssistance.EF.Models.Company", "Company")
+                        .WithMany("Attributes")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("StocksAssistance.EF.Models.CompanyTag", b =>
                 {
                     b.HasOne("StocksAssistance.EF.Models.Company", "Company")
@@ -135,6 +172,8 @@ namespace StocksAssistance.EF.Migrations
 
             modelBuilder.Entity("StocksAssistance.EF.Models.Company", b =>
                 {
+                    b.Navigation("Attributes");
+
                     b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618

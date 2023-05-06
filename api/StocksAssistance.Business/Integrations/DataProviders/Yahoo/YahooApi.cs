@@ -12,17 +12,36 @@ namespace StocksAssistance.Business.Integrations.DataProviders.Yahoo
     public static class YahooApi
     {
         // TODO: Add GetCompany method that makes a GET request to Yahoo API and returns a CompanyDto object
-        public static async Task<QuoteRoot> GetCompany(string symbol)
+        public static async Task<QuoteRoot?> GetCompaniesQuotes(List<string> symbols)
         {
+            string symbolsString = string.Join(",", symbols);
             HttpClient client = new HttpClient();
 
-            var response = await client.GetAsync($"https://query2.finance.yahoo.com/v7/finance/quote?symbols={symbol}");
-            var json = await response.Content.ReadAsStringAsync();
+            string version = "v7";
 
-            QuoteRoot quoteRoot = string.IsNullOrEmpty(json) ? new QuoteRoot() : JsonConvert.DeserializeObject<QuoteRoot>(json);
+            HttpResponseMessage response = await client.GetAsync($"https://query2.finance.yahoo.com/{version}/finance/quote?symbols={symbolsString}");
 
-            //CompanyDto company = null;
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                version = "v6";
+                response = await client.GetAsync($"https://query2.finance.yahoo.com/{version}/finance/quote?symbols={symbolsString}");
+            }
+
+            string json = await response.Content.ReadAsStringAsync();
+
+            QuoteRoot? quoteRoot = string.IsNullOrEmpty(json) ? null : JsonConvert.DeserializeObject<QuoteRoot>(json);
+
             return quoteRoot;
+        }
+
+        public static async Task<QuoteSummaryRoot?> GetCompanyModules(string symbol, List<string> modules)
+        {
+            string modulesString = string.Join(",", modules);
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync($"https://query1.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules={modulesString}");
+            string json = await response.Content.ReadAsStringAsync();
+            QuoteSummaryRoot? quoteSummary = string.IsNullOrEmpty(json) ? null : JsonConvert.DeserializeObject<QuoteSummaryRoot>(json);
+            return quoteSummary;
         }
     }
 }

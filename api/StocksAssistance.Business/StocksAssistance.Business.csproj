@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StocksAssistance.Common\StocksAssistance.Common.csproj" />
+    <ProjectReference Include="..\StocksAssistance.EF\StocksAssistance.EF.csproj" />
   </ItemGroup>
 
 </Project>

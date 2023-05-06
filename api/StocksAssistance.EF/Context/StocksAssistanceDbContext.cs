@@ -15,11 +15,15 @@ namespace StocksAssistance.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Company>(entity => entity.HasMany(c => c.Attributes).
+            WithOne(t => t.Company).HasForeignKey(t => t.CompanyId));
+
             modelBuilder.Entity<Company>(entity => entity.HasMany(c => c.Tags).
             WithOne(t => t.Company).HasForeignKey(t => t.CompanyId));
         }
 
         public DbSet<Company> Companies { get; set; }
+        public DbSet<CompanyAttribute> CompanyAttributes { get; set; }
         public DbSet<CompanyTag> CompanyTags { get; set; }
     }
 }
