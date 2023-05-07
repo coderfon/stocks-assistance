@@ -44,6 +44,11 @@ namespace StocksAssistance.EF.Repositories
 
         public async Task Add(Company entity, bool save = true)
         {
+            entity.Logs.Add(new CompanyLog
+            {
+                Type = CompanyLogType.Created,
+                TimeStamp = DateTime.UtcNow
+            });
             context.Companies.Add(entity);
             if (save) await SaveChanges();
         }

@@ -1,18 +1,16 @@
 ﻿using StocksAssistance.Common.Enums;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace StocksAssistance.EF.Models
 {
-    public class CompanyTag
+    public class CompanyLog
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(20)]
-        public string Name { get; set; } = string.Empty;
+        public CompanyLogType Type { get; set; }
         [Required]
-        public CompanyTagType Type { get; set; }
+        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
         public virtual ICollection<Company> Companies { get; set; } = new HashSet<Company>();
     }
 }

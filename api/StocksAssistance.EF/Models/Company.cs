@@ -41,7 +41,8 @@ namespace StocksAssistance.EF.Models
 
         #endregion
 
-        public virtual List<CompanyAttribute> Attributes { get; set; } = new List<CompanyAttribute>();
-        public virtual List<CompanyTag> Tags { get; set; } = new List<CompanyTag>();
+        public virtual ICollection<CompanyAttribute> Attributes { get; set; } = new HashSet<CompanyAttribute>();
+        public virtual ICollection<CompanyTag> Tags { get; set; } = new HashSet<CompanyTag>();
+        public virtual ICollection<CompanyLog> Logs { get; set; } = new HashSet<CompanyLog>();
     }
 }
