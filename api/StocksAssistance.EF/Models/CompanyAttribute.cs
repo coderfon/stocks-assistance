@@ -17,6 +17,8 @@ namespace StocksAssistance.EF.Models
         public string Value { get; set; } = string.Empty;
         [Required]
         public CompanyAttributeType Type { get; set; }
-        public virtual ICollection<Company> Companies { get; set; } = new HashSet<Company>();
+        [Required]
+        public int CompanyId { get; set; }
+        public virtual Company Company { get; set; } = null!;
     }
 }

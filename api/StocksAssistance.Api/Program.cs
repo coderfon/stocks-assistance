@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<StocksAssistanceDbContext>(opts => opts.UseLazyLoadingProxies()
                                                                      .UseSqlServer(connectionString));
 builder.Services.AddScoped<CompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<CompanyTagRepository, CompanyTagRepository>();
 builder.Services.AddScoped<CompanyService, CompanyService>();
 
 

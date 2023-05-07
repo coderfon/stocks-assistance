@@ -53,15 +53,15 @@ namespace StocksAssistance.EF.Repositories
             if (save) await SaveChanges();
         }
 
-        public async Task Update(Company restaurant, bool save = true)
+        public async Task Update(Company entity, bool save = true)
         {
-            context.Companies.Update(restaurant);
+            context.Companies.Update(entity);
             if (save) await SaveChanges();
         }
 
-        public async Task Delete(Company restaurant, bool save = true)
+        public async Task Delete(Company entity, bool save = true)
         {
-            context.Companies.Remove(restaurant);
+            context.Companies.Remove(entity);
             if (save) await SaveChanges();
         }
 

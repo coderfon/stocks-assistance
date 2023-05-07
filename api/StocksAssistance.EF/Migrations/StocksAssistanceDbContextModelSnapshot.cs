@@ -25,22 +25,7 @@ namespace StocksAssistance.EF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CompaniesToAttributes", b =>
-                {
-                    b.Property<int>("AttributesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompaniesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AttributesId", "CompaniesId");
-
-                    b.HasIndex("CompaniesId");
-
-                    b.ToTable("CompaniesToAttributes");
-                });
-
-            modelBuilder.Entity("CompaniesToTags", b =>
+            modelBuilder.Entity("CompaniesTags", b =>
                 {
                     b.Property<int>("CompaniesId")
                         .HasColumnType("int");
@@ -48,16 +33,11 @@ namespace StocksAssistance.EF.Migrations
                     b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LogsId")
-                        .HasColumnType("int");
-
                     b.HasKey("CompaniesId", "TagsId");
-
-                    b.HasIndex("LogsId");
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("CompaniesToTags");
+                    b.ToTable("CompaniesTags");
                 });
 
             modelBuilder.Entity("StocksAssistance.EF.Models.Company", b =>
@@ -140,6 +120,9 @@ namespace StocksAssistance.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
@@ -149,6 +132,8 @@ namespace StocksAssistance.EF.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyAttributes");
                 });
@@ -161,6 +146,9 @@ namespace StocksAssistance.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
@@ -168,6 +156,8 @@ namespace StocksAssistance.EF.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyLogs");
                 });
@@ -182,8 +172,8 @@ namespace StocksAssistance.EF.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -193,32 +183,11 @@ namespace StocksAssistance.EF.Migrations
                     b.ToTable("CompanyTags");
                 });
 
-            modelBuilder.Entity("CompaniesToAttributes", b =>
-                {
-                    b.HasOne("StocksAssistance.EF.Models.CompanyAttribute", null)
-                        .WithMany()
-                        .HasForeignKey("AttributesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StocksAssistance.EF.Models.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CompaniesToTags", b =>
+            modelBuilder.Entity("CompaniesTags", b =>
                 {
                     b.HasOne("StocksAssistance.EF.Models.Company", null)
                         .WithMany()
                         .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StocksAssistance.EF.Models.CompanyLog", null)
-                        .WithMany()
-                        .HasForeignKey("LogsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -227,6 +196,35 @@ namespace StocksAssistance.EF.Migrations
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("StocksAssistance.EF.Models.CompanyAttribute", b =>
+                {
+                    b.HasOne("StocksAssistance.EF.Models.Company", "Company")
+                        .WithMany("Attributes")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("StocksAssistance.EF.Models.CompanyLog", b =>
+                {
+                    b.HasOne("StocksAssistance.EF.Models.Company", "Company")
+                        .WithMany("Logs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("StocksAssistance.EF.Models.Company", b =>
+                {
+                    b.Navigation("Attributes");
+
+                    b.Navigation("Logs");
                 });
 #pragma warning restore 612, 618
         }

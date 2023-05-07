@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using StocksAssistance.EF.Models;
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,16 @@ namespace StocksAssistance.EF.Context
         {
             modelBuilder.Entity<Company>()
                 .HasMany(c => c.Attributes)
-                .WithMany(t => t.Companies)
-                .UsingEntity("CompaniesToAttributes");
+                .WithOne(a => a.Company).HasForeignKey(a => a.CompanyId);
 
             modelBuilder.Entity<Company>()
                 .HasMany(c => c.Tags)
                 .WithMany(t => t.Companies)
-                .UsingEntity("CompaniesToTags");
+                .UsingEntity("CompaniesTags");
 
             modelBuilder.Entity<Company>()
                 .HasMany(c => c.Logs)
-                .WithMany(t => t.Companies)
-                .UsingEntity("CompaniesToTags");
+                .WithOne(l => l.Company).HasForeignKey(l => l.CompanyId);
         }
 
         public DbSet<Company> Companies { get; set; }

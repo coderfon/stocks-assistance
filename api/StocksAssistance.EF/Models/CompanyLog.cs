@@ -11,6 +11,8 @@ namespace StocksAssistance.EF.Models
         public CompanyLogType Type { get; set; }
         [Required]
         public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
-        public virtual ICollection<Company> Companies { get; set; } = new HashSet<Company>();
+        [Required]
+        public int CompanyId { get; set; }
+        public virtual Company Company { get; set; } = null!;
     }
 }

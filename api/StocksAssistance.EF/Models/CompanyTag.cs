@@ -9,7 +9,7 @@ namespace StocksAssistance.EF.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(20)]
+        [MaxLength(50)]
         public string Name { get; set; } = string.Empty;
         [Required]
         public CompanyTagType Type { get; set; }

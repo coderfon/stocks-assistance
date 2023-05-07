@@ -15,11 +15,13 @@ namespace StocksAssistance.Business.Services
 {
     public class CompanyService
     {
-        CompanyRepository companyRepository;    
+        CompanyRepository companyRepository;  
+        CompanyTagRepository companyTagRepository;
 
-        public CompanyService(CompanyRepository companyRepository)
+        public CompanyService(CompanyRepository companyRepository, CompanyTagRepository companyTagRepository)
         {
             this.companyRepository = companyRepository;
+            this.companyTagRepository = companyTagRepository;
         }
 
         public async Task AddCompanies(List<CompanySetupDto> companySetupDtos)
@@ -51,6 +53,7 @@ namespace StocksAssistance.Business.Services
                         var dtoAttrs = companySetupDtos.First(c => c.Attributes
                                     .Any(a => a.Type == CompanyAttributeType.YahooSymbol
                                         && a.Value == result.symbol)).Attributes;
+
                         var dtoTags = companySetupDtos.First(c => c.Attributes
                                     .Any(a => a.Type == CompanyAttributeType.YahooSymbol 
                                         && a.Value == result.symbol)).Tags;
@@ -66,10 +69,21 @@ namespace StocksAssistance.Business.Services
                             DividendYield = result.trailingAnnualDividendYield,
                             Last52WeekHigh = result.fiftyTwoWeekHigh,
                             Last52WeekLow = result.fiftyTwoWeekLow,                           
-                            Attributes = dtoAttrs.Select(a => new CompanyAttribute { Type = a.Type, Value = a.Value }).ToList(),
-                            Tags = dtoTags.Select(t => new CompanyTag { Name = t.Name, Type = t.Type }).ToList()
+                            Attributes = dtoAttrs.Select(a => new CompanyAttribute { Type = a.Type, Value = a.Value }).ToList()
                         };
-                        
+
+                        foreach (var dtoTag in dtoTags)
+                        {
+                            CompanyTag tag = await companyTagRepository.Get(dtoTag.Name, dtoTag.Type);
+                            if (tag == null)
+                            {
+                                tag = new CompanyTag { Name = dtoTag.Name, Type = dtoTag.Type };
+                                await companyTagRepository.Add(tag);
+                            }
+                         
+                            company.Tags.Add(tag);
+                        }
+
                         companiesToAdd.Add(company);
                     }
                 }

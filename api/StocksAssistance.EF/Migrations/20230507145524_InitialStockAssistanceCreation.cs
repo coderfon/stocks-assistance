@@ -40,17 +40,38 @@ namespace StocksAssistance.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyTags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyTags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanyAttributes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Value = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CompanyAttributes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyAttributes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,76 +81,38 @@ namespace StocksAssistance.EF.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CompanyLogs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CompanyTags",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyTags", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CompaniesToAttributes",
-                columns: table => new
-                {
-                    AttributesId = table.Column<int>(type: "int", nullable: false),
-                    CompaniesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompaniesToAttributes", x => new { x.AttributesId, x.CompaniesId });
                     table.ForeignKey(
-                        name: "FK_CompaniesToAttributes_Companies_CompaniesId",
-                        column: x => x.CompaniesId,
+                        name: "FK_CompanyLogs_Companies_CompanyId",
+                        column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompaniesToAttributes_CompanyAttributes_AttributesId",
-                        column: x => x.AttributesId,
-                        principalTable: "CompanyAttributes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompaniesToTags",
+                name: "CompaniesTags",
                 columns: table => new
                 {
                     CompaniesId = table.Column<int>(type: "int", nullable: false),
-                    TagsId = table.Column<int>(type: "int", nullable: false),
-                    LogsId = table.Column<int>(type: "int", nullable: false)
+                    TagsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompaniesToTags", x => new { x.CompaniesId, x.TagsId });
+                    table.PrimaryKey("PK_CompaniesTags", x => new { x.CompaniesId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_CompaniesToTags_Companies_CompaniesId",
+                        name: "FK_CompaniesTags_Companies_CompaniesId",
                         column: x => x.CompaniesId,
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CompaniesToTags_CompanyLogs_LogsId",
-                        column: x => x.LogsId,
-                        principalTable: "CompanyLogs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompaniesToTags_CompanyTags_TagsId",
+                        name: "FK_CompaniesTags_CompanyTags_TagsId",
                         column: x => x.TagsId,
                         principalTable: "CompanyTags",
                         principalColumn: "Id",
@@ -137,41 +120,38 @@ namespace StocksAssistance.EF.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompaniesToAttributes_CompaniesId",
-                table: "CompaniesToAttributes",
-                column: "CompaniesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompaniesToTags_LogsId",
-                table: "CompaniesToTags",
-                column: "LogsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompaniesToTags_TagsId",
-                table: "CompaniesToTags",
+                name: "IX_CompaniesTags_TagsId",
+                table: "CompaniesTags",
                 column: "TagsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyAttributes_CompanyId",
+                table: "CompanyAttributes",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyLogs_CompanyId",
+                table: "CompanyLogs",
+                column: "CompanyId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CompaniesToAttributes");
-
-            migrationBuilder.DropTable(
-                name: "CompaniesToTags");
+                name: "CompaniesTags");
 
             migrationBuilder.DropTable(
                 name: "CompanyAttributes");
-
-            migrationBuilder.DropTable(
-                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "CompanyLogs");
 
             migrationBuilder.DropTable(
                 name: "CompanyTags");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
         }
     }
 }
