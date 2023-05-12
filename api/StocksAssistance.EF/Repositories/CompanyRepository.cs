@@ -33,6 +33,9 @@ namespace StocksAssistance.EF.Repositories
         public async Task<Company> Get(string symbol, CompanyAttributeType symbolProvider)
         {
             return await context.Companies
+                .Include(c => c.Tags)
+                .Include(c => c.Attributes)
+                .Include(c => c.Logs)
                 .FirstOrDefaultAsync(c => c.Attributes.Any(a => a.Type == symbolProvider && a.Value == symbol));
         }
 

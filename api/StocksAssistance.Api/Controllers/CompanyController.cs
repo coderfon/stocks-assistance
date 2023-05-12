@@ -42,5 +42,19 @@ namespace StocksAssistance.Api.Controllers
                 return BadRequest(ex);
             }
         }
+
+        [HttpPut()]
+        public async Task<IActionResult> Update()
+        {
+            try
+            {
+                await companyService.UpdateCompanies();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }
