@@ -7,6 +7,7 @@ using StocksAssistance.EF.Models;
 using StocksAssistance.EF.Repositories;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,9 +136,15 @@ namespace StocksAssistance.Business.Services
             return await companyRepository.Get(id);
         }
 
-        public async Task<IEnumerable<Company>> GetCompanies()
+        public async Task<IEnumerable<CompanyDto>> GetCompanies()
         {
-            return await companyRepository.GetAll().ToListAsync();
+            List<CompanyDto> result = new List<CompanyDto>();
+            var companies = await companyRepository.GetAll().ToListAsync();
+            foreach (var company in companies)
+            {
+                result.Add(CompanyToDto(company));
+            }
+            return result;
         }
 
         public async Task UpdateCompanies()
@@ -201,6 +208,19 @@ namespace StocksAssistance.Business.Services
                     }
                 }
             }
+        }
+
+        private CompanyDto CompanyToDto(Company company)
+        {
+            CompanyDto companyDto = new CompanyDto
+            { 
+                Id = company.Id,
+                Name = company.Name,
+                Sector = company.Sector,
+                Industry = company.Industry
+            };
+
+            return companyDto;
         }
 
         private void UpdateCompanyFromYahooModules(Company company, QuoteSummary quoteSummary)

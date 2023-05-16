@@ -19,15 +19,17 @@ namespace StocksAssistance.Api.Controllers
             this.companyService = companyService;
         }
 
-        /*
-        [HttpGet("{symbol}")]
-        public async Task<QuoteRoot> Get(string symbol)
+        [HttpGet("")]
+        public async Task<IActionResult> Get()
         {
-            //var result = await YahooApi.GetCompany(symbol);
-
-            return (;
+            return Ok(await companyService.GetCompanies());
         }
-        */
+
+        [HttpGet("{symbol}")]
+        public async Task<IActionResult> Get(string symbol)
+        {
+            return Ok(symbol);
+        }
 
         [HttpPost()]
         public async Task<IActionResult> Setup(List<CompanySetupDto> companies)
