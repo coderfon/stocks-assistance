@@ -1,2 +1,0 @@
-add-migration InitialCreation -c StocksAssistanceDbContext -o Migrations
-update-database -Context StocksAssistanceDbContext
