@@ -16,6 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options => options.AddPolicy("DevApiCorsPolicy", policy => policy.WithOrigins("http://localhost:3000")
+                                                                                                 .AllowAnyMethod()
+                                                                                                 .AllowAnyHeader()));
+
 // Add EF Core stuff
 builder.Services.AddDbContext<StocksAssistanceDbContext>(opts => opts.UseLazyLoadingProxies()
                                                                      .UseSqlServer(connectionString));
@@ -31,6 +35,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors("DevApiCorsPolicy");
 }
 
 app.UseHttpsRedirection();
