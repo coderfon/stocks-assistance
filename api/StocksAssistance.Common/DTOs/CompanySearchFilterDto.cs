@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StocksAssistance.Common.DTOs
 {
-    public class CompanySetupDto
+    public class CompanySearchFilterDto
     {
-        public List<TagDto> Tags { get; set; }
-        public List<CompanyAttributeDto> Attributes { get; set; }
+        public string Sector { get; set; }
+        public string Industry { get; set; }
     }
 }

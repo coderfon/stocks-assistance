@@ -30,7 +30,7 @@ namespace StocksAssistance.EF.Repositories
             return await context.Companies.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Company> Get(string symbol, CompanyAttributeType symbolProvider)
+        public async Task<Company> Get(string symbol, AttributeType symbolProvider)
         {
             return await context.Companies
                 .Include(c => c.Tags)
@@ -39,17 +39,11 @@ namespace StocksAssistance.EF.Repositories
                 .FirstOrDefaultAsync(c => c.Attributes.Any(a => a.Type == symbolProvider && a.Value == symbol));
         }
 
-        public Company GetSync(string symbol, CompanyAttributeType symbolProvider)
-        {
-            return context.Companies
-                .FirstOrDefault(c => c.Attributes.Any(a => a.Type == symbolProvider && a.Value == symbol));
-        }
-
         public async Task Add(Company entity, bool save = true)
         {
-            entity.Logs.Add(new CompanyLog
+            entity.Logs.Add(new Log
             {
-                Type = CompanyLogType.Created,
+                Type = LogType.Created,
                 TimeStamp = DateTime.UtcNow
             });
             context.Companies.Add(entity);

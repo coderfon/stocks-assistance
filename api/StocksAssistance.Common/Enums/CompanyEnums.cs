@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StocksAssistance.Common.Enums
 {
-    public enum CompanyTagType
+    public enum TagType
     {
         [Description("Factor")]
         Factor = 0,
@@ -15,13 +15,13 @@ namespace StocksAssistance.Common.Enums
         Strategy = 1
     }
 
-    public enum CompanyAttributeType
+    public enum AttributeType
     {
         [Description("Yahoo Symbol")]
         YahooSymbol = 0
     }
 
-    public enum CompanyLogType
+    public enum LogType
     {
         [Description("Created")]
         Created = 0,

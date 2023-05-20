@@ -11,12 +11,6 @@ namespace StocksAssistance.EF.Models
         public string Name { get; set; } = string.Empty;
         [MaxLength(5000)]
         public string? Description { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string Sector { get; set; } = string.Empty;
-        [Required]
-        [MaxLength(100)]
-        public string Industry { get; set; } = string.Empty;
         [MaxLength(100)]
         public string? Website { get; set; }
         [Required]
@@ -25,6 +19,11 @@ namespace StocksAssistance.EF.Models
         [Required]
         [MaxLength(100)]
         public string Country { get; set; } = string.Empty;
+        [Required]
+        public int SectorId { get; set; }
+        public virtual Sector Sector { get; set; } = null!;
+        public int IndustryId { get; set; }
+        public virtual Industry Industry { get; set; } = null!;
 
 
         #region Stats
@@ -41,8 +40,8 @@ namespace StocksAssistance.EF.Models
 
         #endregion
 
-        public virtual ICollection<CompanyAttribute> Attributes { get; set; } = new HashSet<CompanyAttribute>();
-        public virtual ICollection<CompanyTag> Tags { get; set; } = new HashSet<CompanyTag>();
-        public virtual ICollection<CompanyLog> Logs { get; set; } = new HashSet<CompanyLog>();
+        public virtual ICollection<Attribute> Attributes { get; set; } = new HashSet<Attribute>();
+        public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+        public virtual ICollection<Log> Logs { get; set; } = new HashSet<Log>();
     }
 }

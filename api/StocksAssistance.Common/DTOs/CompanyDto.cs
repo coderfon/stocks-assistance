@@ -12,8 +12,8 @@ namespace StocksAssistance.Common.DTOs
         public string Name { get; set; }
         public string Symbol { get; set; } // TODO: Add Symbol property
         public string Description { get; set; } // TODO: Add Description property
-        public string Sector { get; set; } // TODO: Add Sector property
-        public string Industry { get; set; } // TODO: Add Industry property
+        public SectorDto Sector { get; set; } // TODO: Add Sector property
+        public IndustryDto Industry { get; set; } // TODO: Add Industry property
         public string Website { get; set; } // TODO: Add Website property
         public string LogoUrl { get; set; } // TODO: Add LogoUrl property
         public string Exchange { get; set; } // TODO: Add Exchange property

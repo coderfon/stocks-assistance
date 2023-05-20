@@ -8,12 +8,10 @@ using System.Threading.Tasks;
 
 namespace StocksAssistance.Common.DTOs
 {
-    public class CompanyAttributeDto
+    public class TagDto
     {
-        [Required]
-        [MaxLength(20)]
-        public string Value { get; set; } = string.Empty;
-        [Required]
-        public AttributeType Type { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public TagType Type { get; set; }
     }
 }

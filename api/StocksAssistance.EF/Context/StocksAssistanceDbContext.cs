@@ -1,11 +1,6 @@
-﻿using Azure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using StocksAssistance.EF.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Attribute = StocksAssistance.EF.Models.Attribute;
 
 namespace StocksAssistance.EF.Context
 {
@@ -28,11 +23,27 @@ namespace StocksAssistance.EF.Context
             modelBuilder.Entity<Company>()
                 .HasMany(c => c.Logs)
                 .WithOne(l => l.Company).HasForeignKey(l => l.CompanyId);
+
+            modelBuilder.Entity<Sector>()
+                .HasMany(s => s.Companies)
+                .WithOne(c => c.Sector).HasForeignKey(c => c.SectorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Sector>()
+                .HasMany(s => s.Industries)
+                .WithOne(c => c.Sector).HasForeignKey(c => c.SectorId);
+
+            modelBuilder.Entity<Industry>()
+                .HasMany(s => s.Companies)
+                .WithOne(c => c.Industry).HasForeignKey(c => c.IndustryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Company> Companies { get; set; }
-        public DbSet<CompanyAttribute> CompanyAttributes { get; set; }
-        public DbSet<CompanyTag> CompanyTags { get; set; }
-        public DbSet<CompanyLog> CompanyLogs { get; set; }
+        public DbSet<Attribute> Attributes { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<Industry> Industries { get; set; }
+        public DbSet<Sector> Sectors { get; set; }
     }
 }

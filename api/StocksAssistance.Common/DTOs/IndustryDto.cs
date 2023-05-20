@@ -1,5 +1,4 @@
-﻿using StocksAssistance.Common.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace StocksAssistance.Common.DTOs
 {
-    public class CompanyTagDto
+    public class IndustryDto
     {
-        [Required]
-        [MaxLength(20)]
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        [Required]
-        public CompanyTagType Type { get; set; }
+        public int SectorId { get; set; }
     }
 }

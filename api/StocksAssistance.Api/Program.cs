@@ -1,9 +1,8 @@
-using StocksAssistance.Common.Helpers;
 using StocksAssistance.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using StocksAssistance.Business.Services;
 using StocksAssistance.EF.Repositories;
-using StocksAssistance.EF.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,7 @@ string connectionString = builder.Configuration.GetConnectionString("StocksAssis
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,8 +23,10 @@ builder.Services.AddCors(options => options.AddPolicy("DevApiCorsPolicy", policy
 builder.Services.AddDbContext<StocksAssistanceDbContext>(opts => opts.UseLazyLoadingProxies()
                                                                      .UseSqlServer(connectionString));
 builder.Services.AddScoped<CompanyRepository, CompanyRepository>();
-builder.Services.AddScoped<CompanyTagRepository, CompanyTagRepository>();
+builder.Services.AddScoped<TagRepository, TagRepository>();
 builder.Services.AddScoped<CompanyService, CompanyService>();
+builder.Services.AddScoped<SectorRepository, SectorRepository>();
+builder.Services.AddScoped<IndustryRepository, IndustryRepository>();
 
 
 var app = builder.Build();

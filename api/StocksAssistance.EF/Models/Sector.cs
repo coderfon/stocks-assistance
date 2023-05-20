@@ -8,17 +8,14 @@ using System.Threading.Tasks;
 
 namespace StocksAssistance.EF.Models
 {
-    public class CompanyAttribute
+    public class Sector
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(20)]
-        public string Value { get; set; } = string.Empty;
-        [Required]
-        public CompanyAttributeType Type { get; set; }
-        [Required]
-        public int CompanyId { get; set; }
-        public virtual Company Company { get; set; } = null!;
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+        public virtual ICollection<Company> Companies { get; set; } = new HashSet<Company>();
+        public virtual ICollection<Industry> Industries { get; set; } = new HashSet<Industry>();
     }
 }

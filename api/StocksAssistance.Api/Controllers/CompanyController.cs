@@ -14,21 +14,34 @@ namespace StocksAssistance.Api.Controllers
     {
         private CompanyService companyService;
 
-        public CompanyController(CompanyService companyService) 
+        public CompanyController(CompanyService companyService)
         {
             this.companyService = companyService;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> Get()
+        [HttpPost("filter")]
+        public async Task<IActionResult> Get(CompanySearchFilterDto filter)
         {
             return Ok(await companyService.GetCompanies());
+            //return Ok(await companyService.GetCompanies(filter));
         }
 
         [HttpGet("{symbol}")]
         public async Task<IActionResult> Get(string symbol)
         {
             return Ok(symbol);
+        }
+
+        [HttpGet("{sector}/industries")]
+        public async Task<IActionResult> GetIndustries(string sector)
+        {
+            return Ok(await companyService.GetCompaniesOptions());
+        }
+
+        [HttpGet("options")]
+        public async Task<IActionResult> GetOptions()
+        {
+            return Ok(await companyService.GetCompaniesOptions());
         }
 
         [HttpPost()]
