@@ -137,20 +137,31 @@ namespace StocksAssistance.Business.Services
 
         public async Task<CompanyOptionsDto> GetCompaniesOptions()
         {
-            CompanyOptionsDto result = new CompanyOptionsDto 
+            try
             {
-                Sectors = sectorRepository.GetAll().Select(s => ToDto(s)).OrderBy(s => s.Name).ToList(),
-                Industries = industryRepository.GetAll().Select(s => ToDto(s)).OrderBy(s => s.Name).ToList(),
-                Tags =  tagRepository.GetAll().Select(t => ToDto(t)).OrderBy(t => t).ToList()
-            };
+                CompanyOptionsDto result = new CompanyOptionsDto
+                {
+                    Sectors = sectorRepository.GetAll().ToList().Select(s => ToDto(s)).OrderBy(s => s.Name),
+                    Industries = industryRepository.GetAll().ToList().Select(s => ToDto(s)).OrderBy(s => s.Name),
+                    Tags = tagRepository.GetAll().ToList().Select(t => ToDto(t)).OrderBy(t => t.Name)
+                };
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // log error
+                return null;
+            }
         }
 
-        public async Task<IEnumerable<CompanyDto>> GetCompanies()
+        public async Task<IEnumerable<CompanyDto>> GetCompanies(CompanySearchFilterDto filterDto)
         {
             List<CompanyDto> result = new List<CompanyDto>();
-            var companies = await companyRepository.GetAll().ToListAsync();
+            var companies = await companyRepository.GetAll()
+                .Where(c => (filterDto.SectorId == 0 || c.SectorId == filterDto.SectorId) &&
+                            (filterDto.IndustryId == 0 || c.IndustryId == filterDto.IndustryId))
+                .ToListAsync();
             foreach (var company in companies)
             {
                 result.Add(ToDto(company));

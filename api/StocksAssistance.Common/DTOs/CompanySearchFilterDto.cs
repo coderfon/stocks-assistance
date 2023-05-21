@@ -8,7 +8,7 @@ namespace StocksAssistance.Common.DTOs
 {
     public class CompanySearchFilterDto
     {
-        public string Sector { get; set; }
-        public string Industry { get; set; }
+        public int SectorId { get; set; }
+        public int IndustryId { get; set; }
     }
 }

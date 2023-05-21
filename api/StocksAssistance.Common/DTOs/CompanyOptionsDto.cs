@@ -8,8 +8,8 @@ namespace StocksAssistance.Common.DTOs
 {
     public class CompanyOptionsDto
     {
-        public List<SectorDto> Sectors { get; set; }
-        public List<IndustryDto> Industries { get; set; }
-        public List<TagDto> Tags { get; set; }
+        public IEnumerable<SectorDto> Sectors { get; set; }
+        public IEnumerable<IndustryDto> Industries { get; set; }
+        public IEnumerable<TagDto> Tags { get; set; }
     }
 }

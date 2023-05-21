@@ -22,8 +22,7 @@ namespace StocksAssistance.Api.Controllers
         [HttpPost("filter")]
         public async Task<IActionResult> Get(CompanySearchFilterDto filter)
         {
-            return Ok(await companyService.GetCompanies());
-            //return Ok(await companyService.GetCompanies(filter));
+            return Ok(await companyService.GetCompanies(filter));
         }
 
         [HttpGet("{symbol}")]
