@@ -238,8 +238,19 @@ namespace StocksAssistance.Business.Services
             { 
                 Id = company.Id,
                 Name = company.Name,
+                Symbol = company.Attributes.FirstOrDefault(a => a.Type == AttributeType.YahooSymbol)?.Value ?? String.Empty,
                 Sector = ToDto(company.Sector),
-                Industry = ToDto(company.Industry)
+                Industry = ToDto(company.Industry),
+                Country = company.Country,
+                Price = company.Price,
+                Last52WeekHigh = company.Last52WeekHigh,
+                Last52WeekLow = company.Last52WeekLow,
+                MarketCap = company.MarketCap,
+                LTM_PE = company.LTM_PE,
+                NTM_PE = company.NTM_PE,
+                PriceBookRatio = company.PriceBookRatio,
+                DividendYield = company.DividendYield,
+                ROE = company.ROE
             };
 
             return dto;
