@@ -12,6 +12,7 @@ namespace StocksAssistance.Common.DTOs
         public string Name { get; set; }
         public string Symbol { get; set; }
         public string Description { get; set; }
+        public string Website { get; set; }
         public SectorDto Sector { get; set; }
         public IndustryDto Industry { get; set; }
         public string Country { get; set; }

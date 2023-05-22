@@ -264,6 +264,7 @@ namespace StocksAssistance.Business.Services
                 Id = company.Id,
                 Name = company.Name,
                 Symbol = company.Attributes.FirstOrDefault(a => a.Type == AttributeType.YahooSymbol)?.Value ?? String.Empty,
+                Website = company.Website,
                 Sector = ToDto(company.Sector),
                 Industry = ToDto(company.Industry),
                 Country = company.Country,
