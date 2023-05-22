@@ -14,3 +14,5 @@ ul.availableTags li button.enabled {
     border:0;
     background-color: deepskyblue;
 }
+
+td.green { background-color: rgb(177, 255, 177); font-weight: bold; }

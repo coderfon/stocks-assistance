@@ -18,6 +18,11 @@ const CompaniesList = () => {
     const [sortingColumn, setSortingColumn] = useState('');
     const [sortingDirection, setSortingDirection] = useState('');
 
+    const [roeAlarm, setRoeAlarm] = useState(30);
+    const [priceBookAlarm, setPriceBookAlarm] = useState(2);
+    const [last52WeekHighPerc, setlast52WeekHighPerc] = useState(10);
+    
+
     useEffect(() => {
         fetch('http://localhost:5071/api/Company/filter', {
             method: "POST",
@@ -35,6 +40,9 @@ const CompaniesList = () => {
             return response.json();
         })
         .then((data) => {
+            data.forEach(company => {
+                company.last52WeekHighPerc = (company.last52WeekHigh - company.price)/company.last52WeekHigh;
+            });
             setCompanies(data);
         });
     }, [selectedSector, selectedIndustry, appliedTags]);
@@ -47,13 +55,13 @@ const CompaniesList = () => {
             .then((data) => {
                 setSectors(data.sectors);
                 const filteredSectors = data.sectors.map(({ id, name }) => ({ id, name }));
-                filteredSectors.splice(0, 0, { id: 0, name: "all"});
+                filteredSectors.splice(0, 0, { id: 0, name: "all sectors"});
                 setSelectSectors(filteredSectors)
                 setSelectedSector(filteredSectors[0].id);
 
                 setIndustries(data.industries);
                 const filteredIndustries = data.industries.map(({ id, name }) => ({ id, name }));
-                filteredIndustries.splice(0, 0, { id: 0, name: "all"});
+                filteredIndustries.splice(0, 0, { id: 0, name: "all industries"});
                 setSelectIndustries(filteredIndustries);
                 setSelectedIndustry(filteredIndustries[0].id);
 
@@ -165,33 +173,43 @@ const CompaniesList = () => {
 
     return (
         <Fragment>
-            <section>
-                <select value={selectedSector || ''} onChange={e => sectorChangeHandler(e.target.value)}>
-                    {selectSectors?.map((value) => (
-                        <option value={value.id} key={value.id}>{value.name}</option>
-                    ))}
-                </select>
-                <select value={selectedIndustry || ''} onChange={e => industryChangeHandler(e.target.value)}>
-                    {selectIndustries?.map((value) => (
-                        <option value={value.id} key={value.id}>{value.name}</option>
-                    ))}
-                </select>
-                <select>
-                    {tags?.map((value) => (
-                        <option value={value.id} key={value.id}>{value.name}</option>
-                    ))}
-                </select>
-            </section>
-            <section>
-                <ul className="availableTags">
-                    {tags?.map((value) => (
-                        <li key={value.id}>
-                            <button value={value.id} onClick={e => tagApply2(e.target.value)} className={value.className}>{value.name}</button>
-                        </li>
-                    ))}
-                </ul>
-                <ul className="appliedTags"></ul>
-            </section>
+            <fieldset>
+                <legend>Filters</legend>
+                <section>
+                    <select value={selectedSector || ''} onChange={e => sectorChangeHandler(e.target.value)}>
+                        {selectSectors?.map((value) => (
+                            <option value={value.id} key={value.id}>{value.name}</option>
+                        ))}
+                    </select>
+                    <select value={selectedIndustry || ''} onChange={e => industryChangeHandler(e.target.value)}>
+                        {selectIndustries?.map((value) => (
+                            <option value={value.id} key={value.id}>{value.name}</option>
+                        ))}
+                    </select>
+                </section>
+                <section>
+                    <ul className="availableTags">
+                        {tags?.map((value) => (
+                            <li key={value.id}>
+                                <button value={value.id} onClick={e => tagApply2(e.target.value)} className={value.className}>{value.name}</button>
+                            </li>
+                        ))}
+                    </ul>
+                    <ul className="appliedTags"></ul>
+                </section>
+            </fieldset>
+            <fieldset>
+                <legend>Alarms</legend>
+                <div>
+                    <span>ROE % </span><input type="text" value={roeAlarm} onChange={e => setRoeAlarm(e.target.value)} />
+                </div>
+                <div>
+                    <span>P/B </span><input type="text" value={priceBookAlarm} onChange={e => setPriceBookAlarm(e.target.value)} />
+                </div>
+                <div>
+                    <span>L52W % </span><input type="text" value={last52WeekHighPerc} onChange={e => setlast52WeekHighPerc(e.target.value)} />
+                </div>
+            </fieldset>
             <table>
                 <thead>
                     <tr>
@@ -217,6 +235,9 @@ const CompaniesList = () => {
                         <span onClick={e => sortCompanies('last52WeekHigh')}>52WH</span>
                         </th>
                         <th>
+                            <span>%52WH</span>
+                        </th>
+                        <th>
                         <span onClick={e => sortCompanies('last52WeekLow')}>52WL</span>
                         </th>
                         <th>
@@ -235,7 +256,7 @@ const CompaniesList = () => {
                         <span onClick={e => sortCompanies('dividendYield')}>Div %</span>
                         </th>
                         <th>
-                        <span onClick={e => sortCompanies('roe')}>ROE</span>
+                        <span onClick={e => sortCompanies('roe')}>ROE %</span>
                         </th>
                     </tr>
                 </thead>
@@ -243,19 +264,20 @@ const CompaniesList = () => {
                     {companies?.map((company) => (
                         <tr key={company.id}>
                             <td>{company.symbol}</td>
-                            <td>{shorten(company.name)}</td>
+                            <td><a href={company.website} target="blank">{shorten(company.name)}</a></td>
                             <td>{company.sector.name}</td>
                             <td>{company.industry.name}</td>
                             <td>{company.country}</td>
                             <td>{company.price}</td>
-                            <td>{company.last52WeekHigh}</td>
-                            <td>{company.last52WeekLow}</td>
+                            <td>{company.last52WeekHigh.toFixed(2)}</td>
+                            <td className={company.last52WeekHighPerc * 100 <= last52WeekHighPerc ? 'green' : ''}>{(company.last52WeekHighPerc * 100).toFixed(2)}</td>
+                            <td>{company.last52WeekLow.toFixed(2)}</td>
                             <td>{company.marketCap}</td>
                             <td>{company.ltM_PE.toFixed(2)}</td>
                             <td>{company.ltM_PE.toFixed(2)}</td>
-                            <td>{company.priceBookRatio.toFixed(2)}</td>
-                            <td>{(company.dividendYield * 100).toFixed(2)}%</td>
-                            <td>{(company.roe * 100).toFixed(2)}%</td>
+                            <td className={company.priceBookRatio <= priceBookAlarm ? 'green' : ''}>{company.priceBookRatio.toFixed(2)}</td>
+                            <td>{(company.dividendYield * 100).toFixed(2)}</td>
+                            <td className={company.roe * 100 >= roeAlarm ? 'green' : ''}>{(company.roe * 100).toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
