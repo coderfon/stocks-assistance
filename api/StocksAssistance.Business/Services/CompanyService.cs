@@ -158,13 +158,38 @@ namespace StocksAssistance.Business.Services
         public async Task<IEnumerable<CompanyDto>> GetCompanies(CompanySearchFilterDto filterDto)
         {
             List<CompanyDto> result = new List<CompanyDto>();
-            var companies = await companyRepository.GetAll()
-                .Where(c => (filterDto.SectorId == 0 || c.SectorId == filterDto.SectorId) &&
-                            (filterDto.IndustryId == 0 || c.IndustryId == filterDto.IndustryId))
-                .ToListAsync();
-            foreach (var company in companies)
+
+            try
             {
-                result.Add(ToDto(company));
+                var companies = await companyRepository.GetAll()
+                        .Where(c => (filterDto.SectorId == 0 || c.SectorId == filterDto.SectorId) &&
+                                    (filterDto.IndustryId == 0 || c.IndustryId == filterDto.IndustryId))
+                        .ToListAsync();
+
+                foreach (var company in companies)
+                {
+                    if (filterDto.TagIds.Count > 0)
+                    {
+                        bool skip = false;
+
+                        foreach (int filterTagId in filterDto.TagIds)
+                        {
+                            if (!company.Tags.Any(t => t.Id == filterTagId))
+                            {
+                                skip = true;
+                                continue;
+                            }
+                        }
+                        if (skip) continue;
+                    }
+
+                    result.Add(ToDto(company));       
+                }
+            }
+            catch (Exception ex)
+            {
+                // log here
+                throw ex;
             }
             return result;
         }

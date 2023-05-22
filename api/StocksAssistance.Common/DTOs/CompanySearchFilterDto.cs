@@ -10,5 +10,6 @@ namespace StocksAssistance.Common.DTOs
     {
         public int SectorId { get; set; }
         public int IndustryId { get; set; }
+        public List<int> TagIds { get; set; }
     }
 }
