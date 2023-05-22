@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect, useCallback } from "react";
+import './companies-list.style.css';
 
 
 const CompaniesList = () => {
@@ -8,6 +9,7 @@ const CompaniesList = () => {
     const [industries, setIndustries] = useState([]);
     const [selectIndustries, setSelectIndustries] = useState([]);
     const [tags, setTags] = useState([]);
+    const [appliedTags, setAppliedTags] = useState([]);
     const [companies, setCompanies] = useState([]);
 
     const [selectedSector, setSelectedSector] = useState('');
@@ -22,7 +24,12 @@ const CompaniesList = () => {
             headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ SectorId: selectedSector === '' ? 0 : selectedSector, IndustryId: selectedIndustry === '' ? 0 : selectedIndustry}),
+              body: JSON.stringify(
+                { 
+                    SectorId: selectedSector === '' ? 0 : selectedSector, 
+                    IndustryId: selectedIndustry === '' ? 0 : selectedIndustry,
+                    TagIds: appliedTags.map(t => t.id)
+                }),
         })
         .then((response) => {
             return response.json();
@@ -30,7 +37,7 @@ const CompaniesList = () => {
         .then((data) => {
             setCompanies(data);
         });
-    }, [selectedSector, selectedIndustry]);
+    }, [selectedSector, selectedIndustry, appliedTags]);
 
     useEffect(() => {
         fetch('http://localhost:5071/api/Company/options')
@@ -131,6 +138,31 @@ const CompaniesList = () => {
         return 0;
     }
 
+    const tagApply = (id) => {
+        let tag = tags.find(t => t.id === parseInt(id));
+        let index = tags.indexOf(tag);
+        tags.splice(index, 1);
+        const newTags = tags.map(obj => ({...obj}));
+        setTags(newTags);
+    }
+
+    const tagApply2 = (id) => {
+        let tag = tags.find(t => t.id === parseInt(id));
+        let appliedTag = appliedTags.find(t => t.id === parseInt(id));
+        let index = appliedTags.indexOf(appliedTag);
+        if(index === -1) {
+            tag.className = "enabled";
+            appliedTags.push(tag);
+        }
+        else {
+            tag.className = "";
+            appliedTags.splice(index, 1);
+        }
+
+        setTags(tags.map(obj => ({...obj})));
+        setAppliedTags(appliedTags.map(obj => ({...obj})));
+    }
+
     return (
         <Fragment>
             <section>
@@ -149,6 +181,16 @@ const CompaniesList = () => {
                         <option value={value.id} key={value.id}>{value.name}</option>
                     ))}
                 </select>
+            </section>
+            <section>
+                <ul className="availableTags">
+                    {tags?.map((value) => (
+                        <li key={value.id}>
+                            <button value={value.id} onClick={e => tagApply2(e.target.value)} className={value.className}>{value.name}</button>
+                        </li>
+                    ))}
+                </ul>
+                <ul className="appliedTags"></ul>
             </section>
             <table>
                 <thead>

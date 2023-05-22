@@ -1,0 +1,16 @@
+ul.availableTags li {
+    display: inline;
+}
+
+ul.availableTags li button {
+    margin-right:10px;
+    border-radius: 10px;
+    border:0;
+}
+
+ul.availableTags li button.enabled {
+    margin-right:10px;
+    border-radius: 10px;
+    border:0;
+    background-color: deepskyblue;
+}
